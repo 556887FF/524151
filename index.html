@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>量子時空傳送器</title>
+    <style>
+        :root {
+            --primary-color: #00ffcc;
+            --bg-color: #0a0a12;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 220, 0.2);
+            border: 1px solid rgba(0, 255, 220, 0.4);
+            max-width: 400px;
+            width: 90%;
+            transition: all 0.5s ease;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(0, 255, 220, 0.5);
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        select {
+            background: #1a1a2e;
+            color: white;
+            border: 1px solid var(--primary-color);
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 150px;
+            outline: none;
+        }
+
+        button {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 255, 220, 0.1);
+        }
+
+        button:hover {
+            background: var(--primary-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 25px rgba(0, 255, 220, 0.6);
+        }
+
+        /* 隱藏狀態 */
+        .hidden {
+            display: none;
+        }
+
+        /* 動畫特效 */
+        .loading-text {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            animation: blink 1s infinite alternate;
+        }
+
+        @keyframes blink {
+            from { opacity: 0.3; }
+            to { opacity: 1; }
+        }
+
+        .result-text {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="step-setup" class="container">
+        <h1>時空傳送器</h1>
+        <div class="input-group">
+            <label for="time-select">請選擇要穿越到多久以後？</label>
+            <select id="time-select">
+                <option value="3">3 秒後</option>
+                <option value="5">5 秒後</option>
+                <option value="10">10 秒後</option>
+                <option value="30">30 秒後</option>
+            </select>
+        </div>
+        <button id="start-btn">啟動時空跳躍</button>
+    </div>
+
+    <div id="step-traveling" class="container hidden">
+        <h1>穿越時空中...</h1>
+        <p class="loading-text">正在扭曲時空結構，請稍候</p>
+        <p>剩餘時間：<span id="countdown" style="color: var(--primary-color); font-weight: bold;">0</span> 秒</p>
+    </div>
+
+    <div id="step-result" class="container hidden">
+        <h1 style="color: #ff0055; text-shadow: 0 0 10px rgba(255, 0, 85, 0.5);">傳送成功！</h1>
+        <div class="result-text">
+            <p>恭喜你！你已成功穿越到了 <span id="result-seconds" style="color: var(--primary-color); font-weight: bold;">X</span> 秒後的未來！</p>
+            <p style="font-size: 0.9rem; color: #aaa;">（物理學家愛因斯坦表示：這完全符合相對論。）</p>
+        </div>
+        <button id="restart-btn" style="margin-top: 20px; border-color: #ff0055; color: #ff0055;">再次穿越</button>
+    </div>
+
+    <script>
+        // 抓取 HTML 元素
+        const stepSetup = document.getElementById('step-setup');
+        const stepTraveling = document.getElementById('step-traveling');
+        const stepResult = document.getElementById('step-result');
+        
+        const timeSelect = document.getElementById('time-select');
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        
+        const countdownSpan = document.getElementById('countdown');
+        const resultSecondsSpan = document.getElementById('result-seconds');
+
+        // 點擊「啟動時空跳躍」
+        startBtn.addEventListener('click', () => {
+            const seconds = parseInt(timeSelect.value);
+            
+            // 切換畫面到「穿越中」
+            stepSetup.classList.add('hidden');
+            stepTraveling.classList.remove('hidden');
+            
+            let timeLeft = seconds;
+            countdownSpan.textContent = timeLeft;
+
+            // 倒數計時器
+            const timer = setInterval(() => {
+                timeLeft--;
+                countdownSpan.textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    
+                    // 時間到，切換到「結果畫面」
+                    resultSecondsSpan.textContent = seconds;
+                    stepTraveling.classList.add('hidden');
+                    stepResult.classList.remove('hidden');
+                }
+            }, 1000);
+        });
+
+        // 點擊「再次穿越」回到首頁
+        restartBtn.addEventListener('click', () => {
+            stepResult.classList.add('hidden');
+            stepSetup.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
